@@ -1,22 +1,23 @@
 package com.example.demo.api.controller;
 
+import java.security.Principal;
+import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.api.model.UserNotFoundException;
 import com.example.demo.api.model.User;
+import com.example.demo.api.model.UserLogin;
 import com.example.demo.api.repository.UserRepository;
 
 @RestController
@@ -52,4 +53,17 @@ public class UserController {
 	public User getUser(@PathVariable Long id) {
 		return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
 	}
+
+    @RequestMapping("/login")
+    public boolean login(@RequestBody UserLogin user) {
+    	System.out.println(user.toString());
+        return user.getUsername().equals("user") && user.getPassword().equals("password");
+    }
+    
+    @GetMapping("/user")
+    public Principal user(HttpServletRequest request) {
+        String authToken = request.getHeader("Authorization").substring("Basic".length()).trim();
+        System.out.println(authToken);
+        return () ->  new String(Base64.getDecoder().decode(authToken)).split(":")[0];
+    }
 }
