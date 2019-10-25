@@ -56,14 +56,22 @@ public class UserController {
 
     @RequestMapping("/login")
     public boolean login(@RequestBody UserLogin user) {
-    	System.out.println(user.toString());
+    	System.out.println("### user: " + user.toString());
         return user.getUsername().equals("user") && user.getPassword().equals("password");
     }
-    
+
     @GetMapping("/user")
     public Principal user(HttpServletRequest request) {
+    	System.out.println("### logged");
         String authToken = request.getHeader("Authorization").substring("Basic".length()).trim();
         System.out.println(authToken);
         return () ->  new String(Base64.getDecoder().decode(authToken)).split(":")[0];
     }
+
+    /*
+    @GetMapping("/user")
+	public User getUserId(@PathVariable Long id) {
+		return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+	}*/
+
 }
