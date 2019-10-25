@@ -68,10 +68,4 @@ public class UserController {
         return () ->  new String(Base64.getDecoder().decode(authToken)).split(":")[0];
     }
 
-    /*
-    @GetMapping("/user")
-	public User getUserId(@PathVariable Long id) {
-		return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-	}*/
-
 }
